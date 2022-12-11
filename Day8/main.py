@@ -17,74 +17,46 @@ def main():
         cols[count] = [ col[col_count] for col in grid ]
         count += 1
         col_count += 1
-    print(rows)
-    """
-    # rows  {1: ['2', '4', '0', '4', '3', '2'], 2: ['2', '3', '3', '3', '5', '3']
-    # cols  {1: ['2', '2', '2', '2', '4', '3'], 2: ['4', '3', '0', '1', '0', '2']
-      240432
-      233353
-      202133
-      214241
-      404043
-      321431 
-    """
+    
     total_count = 0 
+    
     for row_num,values in rows.items():
 
-        col_index = 0
         row_index = 0
+        col_index = 0
         col_num = 0
+
         for value in values:
 
-            #print(values) 
-            #top = 0 if row_num == 1 else cols[col_index - 1][col_num + 1]
-            #bottom = -1 if row_num == len(rows) else cols[col_index + 1][col_num + 1]
-            #print(f'RowNum {row_num}, ColNum {col_num}, ColIndex {col_index}')
-            if row_num == 1:
-                top = -1
+            if row_num == 1 or row_num == len(rows):
+                total_count += 1
+            
             else:
-                top = cols[col_index + 1][row_num - 2]
+                if row_index == 0 or row_index == len(values) - 1:
+                    if not row_num == 1 or not row_num == len(rows):
+                        total_count += 1
             
-            if row_num == len(rows):
-                bottom = -1
-            else:             
-                bottom = cols[col_index + 1][col_num + 1]
-            
-            value, bottom, top = int(value), int(bottom), int(top)
+                    value = int(value)
+                else:
+                    right = values[row_index:][1:]
+                    left = values[:row_index]
+                    bottom = cols[col_index + 1][row_num:]
+                    top = cols[col_index + 1][:row_num - 1]
+                    
+                    right = [i for i in right if i >= value]
+                    left = [i for i in left if i >= value]
+                    top = [i for i in top if i >= value]
+                    bottom = [i for i in bottom if i >= value]
+                    
+                    if not right or not left or not top or not bottom:
+                        total_count += 1
 
-            print(value, top, bottom)
-
-            
-
-            if row_index == 0:
-                # First Number
-                if value > int(values[row_index + 1]) and value > bottom and value > top:
-                    total_count = total_count + 1
-                #if value > int(values[row_index + 1]) and value > bottom:
-                #    total_count = total_count + 1
-
-            elif row_index == len(values) - 1:
-                # Last Number
-                print(row_num)
-                if (value > int(values[row_index - 1]) and 
-                    value > bottom and value > top):
-                    total_count = total_count + 1        
-                #if value > int(values[row_index - 1]) and value > bottom:
-                #    print("yes last:1")
-
-            else:
-                # check left and right
-                if (value > int(values[row_index - 1]) and 
-                    value > int(values[row_index + 1]) and
-                    value > bottom and value > top):
-                    total_count = total_count + 1
-            #col_num += 1    
             row_index += 1
             col_index += 1
-            #col_num += 1
-            
 
+    """ PART 1 """            
     print(total_count)
+
 
 
 
