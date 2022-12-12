@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+from re import I
+
+
 def main():
 
     folders = {}
@@ -40,91 +43,38 @@ def main():
                     sub_dirs[this_path].append(this_path + "/" + ls[1])
     
     all_folders = {}
-    #for k,v in all_files.items():
-    #    print(k,v)
     for folder,subfolders in sub_dirs.items():
-        print(len(subfolders))
         folder_size = 0
         for file,size in all_files.items():
-            if file.startswith(folder):
+            if file.startswith(folder):                
                 folder_size = folder_size + size
 
-        for file,size in all_files.items():
-            for subfolder in subfolders:
+        all_folders[folder] = folder_size
+        
+
+        for subfolder in subfolders:
+
+            folder_size = 0
+            for file,size in all_files.items():
                 if file.startswith(subfolder):
                     folder_size = folder_size + size
-        
-        all_folders[folder] = folder_size
-                    
+                all_folders[subfolder] = folder_size
+    
+    dir_to_del = []
+    total_space = 70000000
+    space_free = total_space - all_folders["/"]
+    space_needed = 30000000 - space_free
+    for k,v in all_folders.items():
+        if v > space_needed:
+            dir_to_del.append(v)
 
-    #for k,v in all_folders.items():
-    #    print(k,v)
-
-    y = dict(sorted(all_folders.items(), key=lambda item: item[1]))
+    print(f'Part 2: {min(dir_to_del)}')
+    
     total = 0 
-    for k,v in y.items():
-        print(k,v)
+    for k,v in all_folders.items():
         if v <= 100000:
             total = total + v
 
     print(f'Part 1 Total: {total}')
-
-        #print(folder, subfolder)
-    """ 
-    all_folders = {}
-    for file,space in all_files.items():
-        for folder,subfolder in sub_dirs.items():
-            print('/'.split(folder))
-            print('/'.split(file))
-            if folder in file:
-                if folder in all_folders.keys():
-                    all_folders[folder] = all_folders[folder] + space
-                else:
-                    all_folders[folder] = space
-                print("yes")
-    print(all_folders)
-    """
-    """
-    temp_dict = {}
-    for k,v in all_files.items():
-        #print(k,v)
-        if not k:
-            k = "/est"
-        split_me = k.split('/')
-        directory = split_me[-2:-1][0]
-        #print(directory)
-        if k not in temp_dict.keys():
-            temp_dict[directory] = int(v)
-        else: 
-            temp_dict[directory] = temp_dict[directory] + int(v)
-
-
-    y = dict(sorted(temp_dict.items(), key=lambda item: item[1]))
-    total = 0 
-    for k,v in y.items():
-        if v <= 100000:
-            total = total + v
-
-    print(f'Part 1 Total: {total}')
-
-    
-    total_sizes = {} 
-    for k,v in dirs_just_files.items():
-        total_size = v
-
-        for x in sub_dirs[k]:
-            total_size = total_size + dirs_just_files[x]
-
-        total_sizes[k] = total_size
-    
-    y = dict(sorted(total_sizes.items(), key=lambda item: item[1]))
-    total = 0 
-    for k,v in y.items():
-        if v <= 100000:
-            total = total + v
-
-    print(f'Part 1 Total: {total}')
-    
-    """
 if __name__ == '__main__':
-   main()
+    main()
